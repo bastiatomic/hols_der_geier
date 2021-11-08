@@ -1,19 +1,19 @@
-import java.util.ArrayList;
-import java.util.Random;
 
 public class temp {
 
     public static void main(String[] args) {
 
-        ArrayList<Integer> centerCards = new ArrayList<>();
-        centerCards.add(30);
-        centerCards.add(50);
-        centerCards.add(150);
-        centerCards.add(500);
+        Human oneHuman = new Human();
+        Human twoHuman = new Human();
 
-        Integer randomInt = centerCards.get(new Random().nextInt(centerCards.size()));
-        System.out.println(randomInt);
+        System.out.println(oneHuman.getVictoryPoints());
 
-        System.out.println(centerCards);
+        oneHuman.addStarterCards();
+        oneHuman.setVictoryPoints(39);
+
+        System.out.println(oneHuman.getUserCards());
+        System.out.println(twoHuman.getUserCards());
+
+
     }
 }

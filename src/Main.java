@@ -1,58 +1,47 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Main{
+public class Main {
 
     public static void main(String[] args) {
 
-        HashSet<Integer> firstUserCards = new HashSet<>();
-        HashSet<Integer> secondUserCards = new HashSet<>();
         ArrayList<Integer> centerCards = new ArrayList<>();
-        int firstUserCollectedCards = 0;
-        int secondUserCollectedCards = 0;
         Scanner input1 = new Scanner(System.in);
+        boolean running = true;
+        Human OneBot = new Human();
+        Human TwoBot = new Human();
 
         // fill hashSets
-        fillUserCards(firstUserCards);
-        fillUserCards(secondUserCards);
         fillCenterCards(centerCards);
 
+
         //game loop
-        while (centerCards.size() != 0) {
-            // centralCards
-            System.out.println("[LOG] CenterCards: " + centerCards);
+        while (centerCards.size() != 0 && running) {
+
+            // centerCards
+            printLine("Log", "CenterCards: " + centerCards, "\u001B[33m");
             int index = new Random().nextInt(centerCards.size());
             int centerCardsChoice = centerCards.get(index);
             centerCards.remove(index);
-            System.out.println("centerCardsChoice: " + centerCardsChoice);
+            printLine("Game", "Revealed number: " + centerCardsChoice, "\u001B[32m");
 
-            // get user input
-            System.out.print("prompt input of firstUser: ");
-            int firstUserChoice = input1.nextInt();
-            System.out.println("Valid? " + firstUserCards.contains(firstUserChoice));
-            firstUserCards.remove(firstUserChoice);
+            //bot decisions based on their behavior patterns defined in their classes
 
-            System.out.print("prompt input of secondUser: ");
-            int secondUserChoice = input1.nextInt();
-            System.out.println("Valid? " + secondUserCards.contains(secondUserChoice));
-            secondUserCards.remove(secondUserChoice);
 
-            // winning condition checker
-            if (centerCardsChoice > 0 && firstUserChoice > secondUserChoice) {
-                firstUserCollectedCards += centerCardsChoice;
-            } else if (centerCardsChoice > 0 && firstUserChoice < secondUserChoice){
-                secondUserCollectedCards += centerCardsChoice;
-            } else if (centerCardsChoice < 0 && firstUserChoice > secondUserChoice){
-                secondUserCollectedCards += centerCardsChoice;
-            } else {
-                firstUserCollectedCards += centerCardsChoice;
-            }
-            System.out.println("[LOG] firstUser: " + firstUserCollectedCards + " | secondUser: " + secondUserCollectedCards);
+            // winner checker
+
+
+            //overview after the round (or whole game, if winner checker defines a winner
+
+
+            //mechanics
+            printLine("Mechanic", "Procced? (true, false)", "\u001B[31m");
+            running = input1.nextBoolean();
         }
+
     }
-    public static void fillUserCards(HashSet<Integer> array){
+    public static void fillUserCards(ArrayList<Integer> array){
         for (int i = 0; i<= 15; i++){
             array.add(i);
         }
@@ -64,5 +53,8 @@ public class Main{
         for (int i = 1; i<= 10; i++){
             array.add(i);
         }
+    }
+    public static void printLine(String prefix, String text, String color){
+        System.out.println(color + "[" + prefix + "] " + text + "\u001B[0m");
     }
 }
