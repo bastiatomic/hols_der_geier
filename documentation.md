@@ -3,11 +3,11 @@ Game has multiple stages. Each stage will fetch and save different type of data 
 
 
 ---The stages---
-1. the vulture/mouse cards gets shown to the players
+1. a new 'center card is shown to both players'
 2. each player selects one of their cards, but they remain hidden for the other players
-3. everyone reveals their card value
+3. everyone reveals their card (with their value)
 4. the 'game control' removes the edge cases and picks the highest/lowest card player
-5. the points are given to the winning player
+5. the card (and so the points) are given to the winning player
 6. the 'game control' removes all played cards from the game
 7. small break and the loop repeats
 
