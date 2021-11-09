@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RandomBot extends Main{
+public class DataDrivenBot extends Main{
 
     public int victoryPoints = 0;
     public ArrayList<Integer> userCards = new ArrayList<>();
