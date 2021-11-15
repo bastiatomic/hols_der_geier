@@ -3,10 +3,7 @@ import java.util.Random;
 
 public class RandomBot extends Main{
 
-    public int victoryPoints = 0;
-    public ArrayList<Integer> userCards = new ArrayList<>();
-
-    public int decideCard(){
+    public int decideCard(int centerCardsChoice, ArrayList<Integer> userCards, ArrayList<Integer> OneBotUserCards){
 
         int index2 = new Random().nextInt(userCards.size());
         int botChoice = userCards.get(index2); // get a card based on the given index
@@ -15,10 +12,4 @@ public class RandomBot extends Main{
         return botChoice;
 
     }
-    public void populateBotCards(){
-        for (int i = 1; i <= 15; i++){
-            this.userCards.add(i);
-        }
-    }
-
 }
