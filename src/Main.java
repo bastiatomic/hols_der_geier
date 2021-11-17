@@ -2,44 +2,42 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
 
     public static int centerCardsChoice;
-    public static final int calculateDepth = 5;
+    public static final int calculateDepth = 1; //default = 15
     public static final int gamesAmount = 1;
-    public static int OneBotVictoryPoints = 0;
-    public static int TwoBotVictoryPoints = 0;
+    public static int OneBotVictoryPoints;
+    public static int TwoBotVictoryPoints;
     public static ArrayList<Integer> OneBotUserCards = new ArrayList<>();
     public static ArrayList<Integer> TwoBotUserCards = new ArrayList<>();
+    public static boolean running = true;
 
     public static void main(String[] args) throws IOException {
+        Scanner input1 = new Scanner(System.in);
 
         // how many rounds? ability to run n unique gaes
         for (int game = 1; game <= gamesAmount; game++) {
 
             ArrayList<Integer> centerCards = new ArrayList<>();
-            //Scanner input1 = new Scanner(System.in);
-            //boolean running = true;
             OneBot OneBot = new OneBot();
             RandomBot TwoBot = new RandomBot();
             int currentRound = 1;
 
-            // fill hashSets
+            // fill hashSets, clear VictoryPoints
             fillCenterCards(centerCards);
             populateBotCards(OneBotUserCards);
             populateBotCards(TwoBotUserCards);
-
+            OneBotVictoryPoints = 0;
+            TwoBotVictoryPoints = 0;
 
             //game loop
-            while (centerCards.size() != 0 && currentRound <= calculateDepth) {
+            while (centerCards.size() != 0 && currentRound <= calculateDepth && running == true) {
 
                 // centerCards
-                int index = new Random().nextInt(centerCards.size());
-                centerCardsChoice = centerCards.get(index); // get a card based on the given index
-                centerCards.remove(index); // remove the card based on the given index
-                printLine("Log", "CenterCards: " + centerCards);
-                printLine("Game", "Round " + (15 - centerCards.size()) + " | Revealed number: " + centerCardsChoice);
+                centerCardsChoice = getCenterCard(centerCards);
 
                 //bot decisions based on their behavior patterns defined in their classes
                 int currentOneBotDecision = OneBot.decideCard(centerCardsChoice, OneBotUserCards,TwoBotUserCards);
@@ -52,31 +50,39 @@ public class Main {
 
                 // winner checker
                 int winner = winnerChecker(centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
-                if (winner == 1) {
-                    OneBotVictoryPoints += centerCardsChoice;
-                    printLine("Game", "OneBot gained " + centerCardsChoice + " points.");
-                } else {
-                    TwoBotVictoryPoints += centerCardsChoice;
-                    printLine("Game", "TwoBot gained " + centerCardsChoice + " points.");
+                switch(winner) {
+                    case 1 -> {
+                        OneBotVictoryPoints += centerCardsChoice;
+                        printLine("Game", "OneBot gained " + centerCardsChoice + " points.");
+                    }
+                    case 2 -> {
+                        TwoBotVictoryPoints += centerCardsChoice;
+                        printLine("Game", "TwoBot gained " + centerCardsChoice + " points.");
+                    }
+                    case 0 -> {
+                        printLine("Mechanic", "Bots bots have chosen the same value. Revealing an additional centerCard");
+                        int additionalCenterCard = getCenterCard(centerCards);
+                        centerCardsChoice += additionalCenterCard;
+                        printLine("Game", "Adding " + additionalCenterCard + " to the center");
+                        printLine("Game", "New centerCard value: " + centerCardsChoice);
+                        currentRound -=1; //decrement by 1 to prevent the loop from stopping too early
+                    }
                 }
 
                 //overview after the round (or whole game, if winner checker defines a winner
                 printLine("Game", "OneBot points: " + OneBotVictoryPoints + " | TwoBot points: " + TwoBotVictoryPoints);
 
                 // write result to csv
-                writeToCSV("empty_id",game, currentRound, centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
+                writeToCSV((game *calculateDepth+ currentRound),game, currentRound, centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
 
-
-                //mechanics
-                //printLine("Mechanic", "Procced? (enter or 'stop')");
                 //end handling of each round
                 currentRound += 1;
-                //running = false;
-                //running = ! input1.nextLine().equals("stop");
-            }
-            // end of each game
+                running = input1.nextBoolean();
 
-            writeToCSV("end_round", 0, 0, 0, OneBotVictoryPoints, TwoBotVictoryPoints);
+            }
+
+            // end of each game
+            writeToCSV((game *calculateDepth+ currentRound), 0, 0, 0, OneBotVictoryPoints, TwoBotVictoryPoints);
             if (OneBotVictoryPoints > TwoBotVictoryPoints) {
                 printLine("Game", "OneBot won.");
             } else {
@@ -137,7 +143,7 @@ public class Main {
 
     }
 
-    public static void writeToCSV(String id, int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision) throws IOException {
+    public static void writeToCSV(int id, int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision) throws IOException {
 
         printLine("Mechanic", "Writing results to csv");
         FileWriter writer = new FileWriter("database.csv", true);
@@ -160,4 +166,13 @@ public class Main {
 
     }
 
+    public static int getCenterCard(ArrayList<Integer> centerCards){
+        int randomIndex = new Random().nextInt(centerCards.size());
+        centerCardsChoice = centerCards.get(randomIndex); // get a card based on the given index
+        centerCards.remove(randomIndex); // remove the card based on the given index
+        //printLine("Log", "CenterCards: " + centerCards);
+        printLine("Game", "Round " + (15 - centerCards.size()) + " | Revealed number: " + centerCardsChoice);
+
+        return centerCardsChoice;
+    }
 }

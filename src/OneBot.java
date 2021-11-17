@@ -5,11 +5,15 @@ public class OneBot extends Main{
 
     public int decideCard(int centerCardsChoice, ArrayList<Integer> userCards, ArrayList<Integer> TwoBotUserCards){
 
-        int index2 = new Random().nextInt(userCards.size());
-        int botChoice = userCards.get(index2); // get a card based on the given index
-        userCards.remove(index2); // remove the card based on the given index
+        int botChoice = centerCardsChoice+5;
 
-        return botChoice;
+        /*int index2 = new Random().nextInt(userCards.size());
+        int botChoice = userCards.get(index2); // get a card based on the given index
+        userCards.remove(index2); // remove the card based on the given index*/
+
+        //userCards.remove(botChoice);
+
+        return 5;
 
     }
 }
