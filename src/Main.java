@@ -7,7 +7,7 @@ public class Main {
 
     public static int centerCardsChoice = 0;
     public static final int calculateDepth = 15; //default = 15
-    public static final int gamesAmount = 100;
+    public static final int gamesAmount = 1;
     public static int OneBotVictoryPoints;
     public static int TwoBotVictoryPoints;
     public static ArrayList<Integer> OneBotUserCards = new ArrayList<>();
@@ -15,7 +15,7 @@ public class Main {
     public static boolean running = true;
     public static boolean allowEnding = true;
     //---------------------------------------------------
-    public static final boolean testModeActive = true;
+    public static final boolean testModeActive = false;
     //---------------------------------------------------
 
     public static void main(String[] args) throws IOException {
@@ -78,7 +78,6 @@ public class Main {
 
                 //end handling of each round
                 printLine("Log", "current centerCards " + centerCards);
-                printLine("Mechanic", "Next iteration? (true/false)");
                 //running = input1.nextBoolean();
                 if (allowEnding) {
                     centerCardsChoice = 0;
@@ -93,6 +92,8 @@ public class Main {
             } else {
                 printLine("Game", "TwoBot won.");
             }
+            printLine("Log", String.valueOf(OneBotUserCards));
+            printLine("Log", String.valueOf(TwoBotUserCards));
             System.out.println(game);
             TwoBotUserCards.clear();
             OneBotUserCards.clear();

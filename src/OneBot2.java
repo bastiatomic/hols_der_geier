@@ -2,64 +2,61 @@ import java.util.*;
 
 public class OneBot2 extends Main{
 
-    HashMap<Integer, Integer> considerationMap = new HashMap<>();
-    HashSet<Integer> centerCardsPlayed = new HashSet<>();
+    ArrayList<Integer> considerCards = new ArrayList<>();
+    int [] indexList = {0,1,-1,2,-2};
+    int negPosFactor;
 
     public int decideCard(int centerCardsChoice, ArrayList<Integer> userCards, ArrayList<Integer> TwoBotUserCards){
         int botChoice = 0;
+        considerCards.clear();
 
         //fill HashMap //standard library // KEY = centerCards, VALUE = OneBotCards
-        for (int i= -5; i<=10; i++){
-            if (i != 0 && !centerCardsPlayed.contains(i)){
-                if(i>0){
-                    considerationMap.put(i, i+5);
-                }else{
-                    considerationMap.put(i, (i*-2+5));
-                }
+        for (int index2 : indexList){
+            if (centerCardsChoice <0){
+                negPosFactor = (centerCardsChoice * -3) + 5;
+            } else{
+                negPosFactor = 5;
+            }
+            // fill considerCards with knowledge
+            int index3 = centerCardsChoice + negPosFactor + index2;
+            if (userCards.contains(index3)) {
+                considerCards.add(index3);
             }
         }
+        System.out.println(centerCardsChoice +"  "+ considerCards);
+
         //case: can I win with this centerCardChoice?
         // ...
 
         //case: centerCardsChocie = 0
         if (centerCardsChoice == 0){
-            return Collections.min(considerationMap.values());
+            botChoice = Collections.min(considerCards);
+            userCards.remove((Integer) botChoice);
+            return  botChoice;
         }
 
         //case: centerCardsChoice > 10
         if (centerCardsChoice > 10){
-            return  Collections.max(considerationMap.values());
+            botChoice = Collections.max(considerCards);
+            userCards.remove((Integer) botChoice);
+            return  botChoice;
         }
 
-        printLine("Mechanic","OneBot " + considerationMap + "   (" + centerCardsChoice + ")");
+        for (int i = 0; i < considerCards.size(); i++) {
+            if(userCards.contains(considerCards.get(0))){
+                return considerCards.get(0);
+            } else {
+                considerCards.remove(0);
+            }
+
+        }
+
+
+
+        printLine("Mechanic","OneBot " + considerCards + "   (" + centerCardsChoice + ")");
 
         // decide based on standard library
-        if (considerationMap.containsKey(centerCardsChoice)) {
-            botChoice = considerationMap.get(centerCardsChoice);
-            considerationMap.remove(centerCardsChoice);
-        } else {
-            // -1 1 -2 2 -3 3 -4 4 -5 5, 1 -1 2 -2 3 -3 4 -4 5 -5
-            printLine("Mechanic", "do sth... lol");
-            int swapper = 1;
-            for (int i = 0; i < 10; i++){
-                if( considerationMap.containsKey(centerCardsChoice += swapper)) {
-                    botChoice = considerationMap.get(centerCardsChoice);
-                    considerationMap.remove(centerCardsChoice);
-                } else {
-                    printLine("Mechanic", "Swapping mechanism in progress " + swapper);
-                    if (swapper >0){
-                        swapper += 1;
-                    } else {
-                        swapper -= 1;
-                    }
-                    swapper *=-1;
-                }
 
-            }
-        }
-
-
-        centerCardsPlayed.add(centerCardsChoice);
         return botChoice;
 
     }
