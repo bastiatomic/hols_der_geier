@@ -1,20 +1,24 @@
-import java.util.Scanner;
-
 public class scribble {
 
     public static void main(String[] args) {
-        Scanner input1 = new Scanner(System.in);
-        int revealedCard = input1.nextInt();
-        int FirstBot = input1.nextInt();
-        int SecondBot = input1.nextInt();
 
-            if (FirstBot == SecondBot) {
-                System.out.println("same");
-            } else if ((revealedCard > 0 && FirstBot > SecondBot) || (revealedCard < 0 && SecondBot > FirstBot)) {
-                System.out.println("FirstBot wins");
-            }  else {
-                System.out.println("Error");
+        // -1 1 -2 2 -3 3
+        int swapper = 1;
+        int centerCardChoice = 20;
+        for (int i = 0; i < 9; i++) {
+
+            System.out.println("Swapper: " + swapper);
+            System.out.println(centerCardChoice += swapper);
+
+            if (swapper >0){
+                swapper += 1;
+            } else {
+                swapper -= 1;
             }
+            swapper *=-1;
+
+            //System.out.println(swapper);
+        }
 
         }
 

@@ -2,22 +2,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Main {
 
     public static int centerCardsChoice = 0;
     public static final int calculateDepth = 15; //default = 15
-    public static final int gamesAmount = 1;
+    public static final int gamesAmount = 100;
     public static int OneBotVictoryPoints;
     public static int TwoBotVictoryPoints;
     public static ArrayList<Integer> OneBotUserCards = new ArrayList<>();
     public static ArrayList<Integer> TwoBotUserCards = new ArrayList<>();
     public static boolean running = true;
     public static boolean allowEnding = true;
+    //---------------------------------------------------
+    public static final boolean testModeActive = true;
+    //---------------------------------------------------
 
     public static void main(String[] args) throws IOException {
-        Scanner input1 = new Scanner(System.in);
 
         // how many rounds? ability to run n unique gaes
         for (int game = 1; game <= gamesAmount; game++) {
@@ -44,11 +45,11 @@ public class Main {
                 //bot decisions based on their behavior patterns defined in their classes
                 int currentOneBotDecision = OneBot.decideCard(centerCardsChoice, OneBotUserCards,TwoBotUserCards);
                 //printLine("Bot", "OneBot card list: " + OneBot.userCards);
-                printLine("Bot", "OneBot decision: " + currentOneBotDecision);
 
                 int currentTwoBotDecision = TwoBot.decideCard(centerCardsChoice, TwoBotUserCards,OneBotUserCards);
                 //printLine("Bot", "TwoBot card list: " + TwoBot.userCards);
-                printLine("Bot", "TwoBot decision: " + currentTwoBotDecision);
+
+                printLine("Bot", "OneBot: " + currentOneBotDecision + " | TwoBot: " + currentTwoBotDecision);
 
                 // winner checker
                 int winner = winnerChecker(centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
@@ -92,7 +93,7 @@ public class Main {
             } else {
                 printLine("Game", "TwoBot won.");
             }
-            System.out.println(game + " is over. Resetting all values.");
+            System.out.println(game);
             TwoBotUserCards.clear();
             OneBotUserCards.clear();
 
@@ -117,16 +118,18 @@ public class Main {
     }
 
     public static void printLine(String prefix, String text){
-        String color;
-        switch(prefix){
-            case "Game" -> color = "\u001B[32m";
-            case "Log" -> color = "\u001B[33m";
-            case "Mechanic" -> color = "\u001B[31m";
-            case "Bot" -> color = "\u001B[34m";
-            default -> color = "\u001B[30m";
+        if (!testModeActive) {
+            String color;
+            switch (prefix) {
+                case "Game" -> color = "\u001B[32m";
+                case "Log" -> color = "\u001B[33m";
+                case "Mechanic" -> color = "\u001B[31m";
+                case "Bot" -> color = "\u001B[34m";
+                default -> color = "\u001B[30m";
 
+            }
+            System.out.println(color + "[" + prefix + "] " + text + "\u001B[0m");
         }
-        System.out.println(color + "[" + prefix + "] " + text + "\u001B[0m");
     }
 
     public static int winnerChecker(int revealedCard, int FirstBot, int SecondBot) {
@@ -139,26 +142,26 @@ public class Main {
     }
 
     public static void writeToCSV(int id, int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision) throws IOException {
+        if (testModeActive){
+            printLine("Mechanic", "Writing results to csv");
+            FileWriter writer = new FileWriter("database.csv", true);
+            writer.append(String.valueOf(id));
+            writer.append(',');
+            writer.append(String.valueOf(game));
+            writer.append(',');
+            writer.append(String.valueOf(currentRound));
+            writer.append(',');
+            writer.append(String.valueOf(centerCardsChoice));
+            writer.append(',');
+            writer.append(String.valueOf(currentOneBotDecision));
+            writer.append(',');
+            writer.append(String.valueOf(currentTwoBotDecision));
+            writer.append(',');
+            writer.append('\n');
 
-        printLine("Mechanic", "Writing results to csv");
-        FileWriter writer = new FileWriter("database.csv", true);
-        writer.append(String.valueOf(id));
-        writer.append(',');
-        writer.append(String.valueOf(game));
-        writer.append(',');
-        writer.append(String.valueOf(currentRound));
-        writer.append(',');
-        writer.append(String.valueOf(centerCardsChoice));
-        writer.append(',');
-        writer.append(String.valueOf(currentOneBotDecision));
-        writer.append(',');
-        writer.append(String.valueOf(currentTwoBotDecision));
-        writer.append(',');
-        writer.append('\n');
-
-        writer.flush();
-        writer.close();
-
+            writer.flush();
+            writer.close();
+        }
     }
 
     public static int getCenterCard(ArrayList<Integer> centerCards){

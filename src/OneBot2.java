@@ -6,7 +6,7 @@ public class OneBot2 extends Main{
     HashSet<Integer> centerCardsPlayed = new HashSet<>();
 
     public int decideCard(int centerCardsChoice, ArrayList<Integer> userCards, ArrayList<Integer> TwoBotUserCards){
-        int botChoice;
+        int botChoice = 0;
 
         //fill HashMap //standard library // KEY = centerCards, VALUE = OneBotCards
         for (int i= -5; i<=10; i++){
@@ -38,7 +38,24 @@ public class OneBot2 extends Main{
             botChoice = considerationMap.get(centerCardsChoice);
             considerationMap.remove(centerCardsChoice);
         } else {
-            botChoice = 0;
+            // -1 1 -2 2 -3 3 -4 4 -5 5, 1 -1 2 -2 3 -3 4 -4 5 -5
+            printLine("Mechanic", "do sth... lol");
+            int swapper = 1;
+            for (int i = 0; i < 10; i++){
+                if( considerationMap.containsKey(centerCardsChoice += swapper)) {
+                    botChoice = considerationMap.get(centerCardsChoice);
+                    considerationMap.remove(centerCardsChoice);
+                } else {
+                    printLine("Mechanic", "Swapping mechanism in progress " + swapper);
+                    if (swapper >0){
+                        swapper += 1;
+                    } else {
+                        swapper -= 1;
+                    }
+                    swapper *=-1;
+                }
+
+            }
         }
 
 
