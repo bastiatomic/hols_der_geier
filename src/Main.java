@@ -6,14 +6,15 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static int centerCardsChoice;
-    public static final int calculateDepth = 1; //default = 15
+    public static int centerCardsChoice = 0;
+    public static final int calculateDepth = 15; //default = 15
     public static final int gamesAmount = 1;
     public static int OneBotVictoryPoints;
     public static int TwoBotVictoryPoints;
     public static ArrayList<Integer> OneBotUserCards = new ArrayList<>();
     public static ArrayList<Integer> TwoBotUserCards = new ArrayList<>();
     public static boolean running = true;
+    public static boolean allowEnding = true;
 
     public static void main(String[] args) throws IOException {
         Scanner input1 = new Scanner(System.in);
@@ -22,7 +23,7 @@ public class Main {
         for (int game = 1; game <= gamesAmount; game++) {
 
             ArrayList<Integer> centerCards = new ArrayList<>();
-            OneBot OneBot = new OneBot();
+            OneBot2 OneBot = new OneBot2();
             RandomBot TwoBot = new RandomBot();
             int currentRound = 1;
 
@@ -34,10 +35,11 @@ public class Main {
             TwoBotVictoryPoints = 0;
 
             //game loop
-            while (centerCards.size() != 0 && currentRound <= calculateDepth && running == true) {
+            while (centerCards.size() != 0 && currentRound <= calculateDepth && running) {
 
                 // centerCards
-                centerCardsChoice = getCenterCard(centerCards);
+                centerCardsChoice += getCenterCard(centerCards);
+                printLine("Mechanic", "sum of centerCards: " + centerCardsChoice);
 
                 //bot decisions based on their behavior patterns defined in their classes
                 int currentOneBotDecision = OneBot.decideCard(centerCardsChoice, OneBotUserCards,TwoBotUserCards);
@@ -54,41 +56,45 @@ public class Main {
                     case 1 -> {
                         OneBotVictoryPoints += centerCardsChoice;
                         printLine("Game", "OneBot gained " + centerCardsChoice + " points.");
+                        allowEnding = true;
                     }
                     case 2 -> {
                         TwoBotVictoryPoints += centerCardsChoice;
                         printLine("Game", "TwoBot gained " + centerCardsChoice + " points.");
+                        allowEnding = true;
                     }
                     case 0 -> {
                         printLine("Mechanic", "Bots bots have chosen the same value. Revealing an additional centerCard");
-                        int additionalCenterCard = getCenterCard(centerCards);
-                        centerCardsChoice += additionalCenterCard;
-                        printLine("Game", "Adding " + additionalCenterCard + " to the center");
-                        printLine("Game", "New centerCard value: " + centerCardsChoice);
-                        currentRound -=1; //decrement by 1 to prevent the loop from stopping too early
+                        allowEnding = false;
                     }
                 }
 
-                //overview after the round (or whole game, if winner checker defines a winner
+                //overview after the round (or whole game, if winner checker defines a winner)
                 printLine("Game", "OneBot points: " + OneBotVictoryPoints + " | TwoBot points: " + TwoBotVictoryPoints);
 
                 // write result to csv
                 writeToCSV((game *calculateDepth+ currentRound),game, currentRound, centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
 
                 //end handling of each round
-                currentRound += 1;
-                running = input1.nextBoolean();
-
+                printLine("Log", "current centerCards " + centerCards);
+                printLine("Mechanic", "Next iteration? (true/false)");
+                //running = input1.nextBoolean();
+                if (allowEnding) {
+                    centerCardsChoice = 0;
+                    currentRound += 1;
+                }
             }
 
-            // end of each game
+            // end of each 15-round-game
             writeToCSV((game *calculateDepth+ currentRound), 0, 0, 0, OneBotVictoryPoints, TwoBotVictoryPoints);
             if (OneBotVictoryPoints > TwoBotVictoryPoints) {
                 printLine("Game", "OneBot won.");
             } else {
                 printLine("Game", "TwoBot won.");
             }
-            System.out.println(game);
+            System.out.println(game + " is over. Resetting all values.");
+            TwoBotUserCards.clear();
+            OneBotUserCards.clear();
 
             // game is terminated
         }
@@ -127,20 +133,9 @@ public class Main {
         if (FirstBot == SecondBot) {
             printLine("Game", "Same card number! Revealing next card!");
             return 0;
-        } else if (revealedCard > 0 && FirstBot > SecondBot) {
-            //printLine("Mechanic", "First case");
+        } else if ((revealedCard > 0 && FirstBot > SecondBot) || (revealedCard < 0 && SecondBot > FirstBot)) {
             return 1;
-        } else if (revealedCard > 0 && SecondBot > FirstBot) {
-            //printLine("Mechanic", "Second case");
-            return 2;
-        } else if (revealedCard < 0 && FirstBot > SecondBot) {
-            //printLine("Mechanic", "Third case");
-            return 2;
-        } else {
-            //printLine("Mechanic", "Fourth case");
-            return 1;
-        }
-
+        } else {return 2;}
     }
 
     public static void writeToCSV(int id, int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision) throws IOException {
