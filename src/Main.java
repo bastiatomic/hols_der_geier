@@ -7,12 +7,11 @@ public class Main {
 
     public static int centerCardsChoice = 0;
     public static final int calculateDepth = 15; //default = 15
-    public static final int gamesAmount = 1;
+    public static final int gamesAmount = 10; //default 1; if more, then testModeActive=true is recommended
     public static int OneBotVictoryPoints;
     public static int TwoBotVictoryPoints;
     public static ArrayList<Integer> OneBotUserCards = new ArrayList<>();
     public static ArrayList<Integer> TwoBotUserCards = new ArrayList<>();
-    public static boolean running = true;
     public static boolean allowEnding = true;
     //---------------------------------------------------
     public static final boolean testModeActive = false;
@@ -20,38 +19,34 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        // how many rounds? ability to run n unique gaes
+        // how many rounds? ability to run n unique games
         for (int game = 1; game <= gamesAmount; game++) {
 
+            //15-round-game | prepare variables
             ArrayList<Integer> centerCards = new ArrayList<>();
             OneBot2 OneBot = new OneBot2();
             RandomBot TwoBot = new RandomBot();
             int currentRound = 1;
 
-            // fill hashSets, clear VictoryPoints
             fillCenterCards(centerCards);
             populateBotCards(OneBotUserCards);
             populateBotCards(TwoBotUserCards);
             OneBotVictoryPoints = 0;
             TwoBotVictoryPoints = 0;
 
-            //game loop
-            while (centerCards.size() != 0 && currentRound <= calculateDepth && running) {
+            //15-round-game | loop
+            while (centerCards.size() != 0 && currentRound <= calculateDepth) {
 
-                // centerCards
+                //centerCards
                 centerCardsChoice += getCenterCard(centerCards);
                 printLine("Mechanic", "sum of centerCards: " + centerCardsChoice);
 
                 //bot decisions based on their behavior patterns defined in their classes
                 int currentOneBotDecision = OneBot.decideCard(centerCardsChoice, OneBotUserCards,TwoBotUserCards);
-                //printLine("Bot", "OneBot card list: " + OneBot.userCards);
-
                 int currentTwoBotDecision = TwoBot.decideCard(centerCardsChoice, TwoBotUserCards,OneBotUserCards);
-                //printLine("Bot", "TwoBot card list: " + TwoBot.userCards);
-
                 printLine("Bot", "OneBot: " + currentOneBotDecision + " | TwoBot: " + currentTwoBotDecision);
 
-                // winner checker
+                //winner checker
                 int winner = winnerChecker(centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
                 switch(winner) {
                     case 1 -> {
@@ -73,32 +68,35 @@ public class Main {
                 //overview after the round (or whole game, if winner checker defines a winner)
                 printLine("Game", "OneBot points: " + OneBotVictoryPoints + " | TwoBot points: " + TwoBotVictoryPoints);
 
-                // write result to csv
+                //write result to csv
                 writeToCSV((game *calculateDepth+ currentRound),game, currentRound, centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
 
                 //end handling of each round
-                printLine("Log", "current centerCards " + centerCards);
-                //running = input1.nextBoolean();
                 if (allowEnding) {
                     centerCardsChoice = 0;
                     currentRound += 1;
                 }
             }
 
-            // end of each 15-round-game
-            writeToCSV((game *calculateDepth+ currentRound), 0, 0, 0, OneBotVictoryPoints, TwoBotVictoryPoints);
+            //15-round-game | end of round handling
+            writeToCSV((game * calculateDepth + currentRound), 0, 0, 0, OneBotVictoryPoints, TwoBotVictoryPoints);
             if (OneBotVictoryPoints > TwoBotVictoryPoints) {
                 printLine("Game", "OneBot won.");
             } else {
                 printLine("Game", "TwoBot won.");
             }
-            printLine("Log", String.valueOf(OneBotUserCards));
-            printLine("Log", String.valueOf(TwoBotUserCards));
-            System.out.println(game);
-            TwoBotUserCards.clear();
-            OneBotUserCards.clear();
 
-            // game is terminated
+            //check validation of game
+            if (OneBotUserCards.isEmpty() && TwoBotUserCards.isEmpty() && centerCards.isEmpty()){
+                printLine("Log","Validation check complete ☑️ | Ending round.\n---------------------------------");
+                //no .clear() required
+                System.out.println(game);
+            } else{
+                printLine("Mechanic", "Something went wrong. Terminating");
+                System.exit(1);
+            }
+
+            //15-round-game is terminated
         }
 
     }
@@ -126,6 +124,7 @@ public class Main {
                 case "Log" -> color = "\u001B[33m";
                 case "Mechanic" -> color = "\u001B[31m";
                 case "Bot" -> color = "\u001B[34m";
+                case "OneBot" -> color = "\u001B[36m";
                 default -> color = "\u001B[30m";
 
             }
