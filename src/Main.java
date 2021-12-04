@@ -1,61 +1,94 @@
+//edge case: in the last round, bot players have the same card value left (tie)
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Main {
+    static double time = System.nanoTime();
 
-    public static int centerCardsChoice = 0;
-    public static final int calculateDepth = 15; //default = 15
-    public static final int gamesAmount = 10; //default 1; if more, then testModeActive=true is recommended
-    public static int OneBotVictoryPoints;
-    public static int TwoBotVictoryPoints;
-    public static ArrayList<Integer> OneBotUserCards = new ArrayList<>();
-    public static ArrayList<Integer> TwoBotUserCards = new ArrayList<>();
-    public static boolean allowEnding = true;
+    private static final int calculateDepth = 15; //default = 15
+    private static final int gamesAmount = 10; //default 1; if more, then allowLogging is recommended
+    private static boolean allowEnding = true;
+    private static int letzterZug;
+    private static int OneBotWins, TwoBotWins;
+    private static final ArrayList<Integer> OneBotCards = new ArrayList<>();
+    private static final ArrayList<Integer> TwoBotCards = new ArrayList<>();
     //---------------------------------------------------
-    public static final boolean testModeActive = false;
+    private static boolean allowPrintLine = true; // increased performance when off
+    private static final boolean allowLogging = true;
     //---------------------------------------------------
 
     public static void main(String[] args) throws IOException {
+
+        //ArrayList<HolsDerGeierSpieler> botList = new ArrayList<>();
+        //botList.add(new Cerberus());
+       // for (HolsDerGeierSpieler opponentBot : botList){}
 
         // how many rounds? ability to run n unique games
         for (int game = 1; game <= gamesAmount; game++) {
 
             //15-round-game | prepare variables
-            ArrayList<Integer> centerCards = new ArrayList<>();
-            OneBot2 OneBot = new OneBot2();
-            RandomBot TwoBot = new RandomBot();
             int currentRound = 1;
-
+            int oneBotVictoryPoints = 0;
+            int twoBotVictoryPoints = 0;
+            int centerCardsChoice = 0;
+            letzterZug = -99;
+            ArrayList<Integer> centerCards = new ArrayList<>();
             fillCenterCards(centerCards);
-            populateBotCards(OneBotUserCards);
-            populateBotCards(TwoBotUserCards);
-            OneBotVictoryPoints = 0;
-            TwoBotVictoryPoints = 0;
+            fillUserCards(OneBotCards);
+            fillUserCards(TwoBotCards);
+
+            //RandomBot TwoBot = new RandomBot();
+            //OneBot TwoBot = new OneBot();
+            //SvGeier OneBot = new SvGeier(); -> buggy as hell
+            //CerberusOld OneBot = new CerberusOld();
+            //ThreeMonkeys TwoBot = new ThreeMonkeys();
+            //OneBot OneBot = new OneBot();
+            RosaHase TwoBot = new RosaHase();
+            RosaHase OneBot = new RosaHase();
+            //ChristopherTabea TwoBot = new ChristopherTabea(); -> buggy as hell
+            //JaboBrandBot TwoBot = new JaboBrandBot();
+            //Sascha TwoBot = new Sascha();
+            //IntelligentererGeier TwoBot = new IntelligentererGeier(); // -> 96% win for me
 
             //15-round-game | loop
             while (centerCards.size() != 0 && currentRound <= calculateDepth) {
 
                 //centerCards
-                centerCardsChoice += getCenterCard(centerCards);
-                printLine("Mechanic", "sum of centerCards: " + centerCardsChoice);
+                int revealedNumber = getCenterCard(centerCards);
+                centerCardsChoice += revealedNumber;
+                printLine("Game", "Round " + (15 - centerCards.size()) + " | Revealed number: " + revealedNumber + " | Played for: " + centerCardsChoice);
 
                 //bot decisions based on their behavior patterns defined in their classes
-                int currentOneBotDecision = OneBot.decideCard(centerCardsChoice, OneBotUserCards,TwoBotUserCards);
-                int currentTwoBotDecision = TwoBot.decideCard(centerCardsChoice, TwoBotUserCards,OneBotUserCards);
+                int currentOneBotDecision = OneBot.gibKarte(centerCardsChoice);
+                //letzterZug = currentOneBotDecision;
+                if(OneBotCards.contains(currentOneBotDecision)){
+                    OneBotCards.removeIf(name -> name.equals(currentOneBotDecision));
+                } else {
+                    printLine("Mechanic", "OneBot, This card has been played or is invalid at all! " + currentOneBotDecision);
+                    System.exit(-1);
+                }
+                int currentTwoBotDecision = TwoBot.gibKarte(centerCardsChoice);
+                letzterZug = currentTwoBotDecision;
+                if(TwoBotCards.contains(currentTwoBotDecision)){
+                    TwoBotCards.removeIf(name -> name.equals(currentTwoBotDecision));
+                } else {
+                    printLine("Mechanic", "TwoBot, This card has been played or is invalid at all! " + currentTwoBotDecision);
+                    System.exit(-1);
+                }
                 printLine("Bot", "OneBot: " + currentOneBotDecision + " | TwoBot: " + currentTwoBotDecision);
 
                 //winner checker
                 int winner = winnerChecker(centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
                 switch(winner) {
                     case 1 -> {
-                        OneBotVictoryPoints += centerCardsChoice;
+                        oneBotVictoryPoints += centerCardsChoice;
                         printLine("Game", "OneBot gained " + centerCardsChoice + " points.");
                         allowEnding = true;
                     }
                     case 2 -> {
-                        TwoBotVictoryPoints += centerCardsChoice;
+                        twoBotVictoryPoints += centerCardsChoice;
                         printLine("Game", "TwoBot gained " + centerCardsChoice + " points.");
                         allowEnding = true;
                     }
@@ -66,38 +99,38 @@ public class Main {
                 }
 
                 //overview after the round (or whole game, if winner checker defines a winner)
-                printLine("Game", "OneBot points: " + OneBotVictoryPoints + " | TwoBot points: " + TwoBotVictoryPoints);
+                printLine("Game", "OneBot points: " + oneBotVictoryPoints + " | TwoBot points: " + twoBotVictoryPoints);
 
                 //write result to csv
-                writeToCSV((game *calculateDepth+ currentRound),game, currentRound, centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
-
+                if(allowLogging) {
+                    writeToCSV((game * calculateDepth + currentRound), game, currentRound, centerCardsChoice, currentOneBotDecision, currentTwoBotDecision);
+                }
                 //end handling of each round
                 if (allowEnding) {
                     centerCardsChoice = 0;
                     currentRound += 1;
                 }
+                System.out.println(game);
             }
 
             //15-round-game | end of round handling
-            writeToCSV((game * calculateDepth + currentRound), 0, 0, 0, OneBotVictoryPoints, TwoBotVictoryPoints);
-            if (OneBotVictoryPoints > TwoBotVictoryPoints) {
+            if (allowLogging) {
+                writeToCSV((game * calculateDepth + currentRound), game, currentRound, 0, oneBotVictoryPoints, twoBotVictoryPoints);
+            }
+            if (oneBotVictoryPoints > twoBotVictoryPoints) {
                 printLine("Game", "OneBot won.");
+                OneBotWins += 1;
             } else {
                 printLine("Game", "TwoBot won.");
+                TwoBotWins += 1;
             }
 
-            //check validation of game
-            if (OneBotUserCards.isEmpty() && TwoBotUserCards.isEmpty() && centerCards.isEmpty()){
-                printLine("Log","Validation check complete ☑️ | Ending round.\n---------------------------------");
-                //no .clear() required
-                System.out.println(game);
-            } else{
-                printLine("Mechanic", "Something went wrong. Terminating");
-                System.exit(1);
-            }
-
+            //System.out.println("(" + game + ")");
             //15-round-game is terminated
         }
+        allowPrintLine = true;
+        printLine("Game", "OneBot: " + OneBotWins + " | TwoBot: " + TwoBotWins);
+        printLine("Mechanic", "[Finished in "+ (System.nanoTime() - time)/1_000_000_000 + " sec]");;
 
     }
 
@@ -110,14 +143,8 @@ public class Main {
         }
     }
 
-    public static void populateBotCards(ArrayList<Integer> cards){
-        for (int i = 1; i <= 15; i++){
-            cards.add(i);
-        }
-    }
-
     public static void printLine(String prefix, String text){
-        if (!testModeActive) {
+        if (allowPrintLine) {
             String color;
             switch (prefix) {
                 case "Game" -> color = "\u001B[32m";
@@ -142,35 +169,47 @@ public class Main {
     }
 
     public static void writeToCSV(int id, int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision) throws IOException {
-        if (testModeActive){
-            printLine("Mechanic", "Writing results to csv");
-            FileWriter writer = new FileWriter("database.csv", true);
-            writer.append(String.valueOf(id));
-            writer.append(',');
-            writer.append(String.valueOf(game));
-            writer.append(',');
-            writer.append(String.valueOf(currentRound));
-            writer.append(',');
-            writer.append(String.valueOf(centerCardsChoice));
-            writer.append(',');
-            writer.append(String.valueOf(currentOneBotDecision));
-            writer.append(',');
-            writer.append(String.valueOf(currentTwoBotDecision));
-            writer.append(',');
-            writer.append('\n');
+        printLine("Mechanic", "Writing results to csv");
+        FileWriter writer = new FileWriter("database.csv", true);
+        writer.append(String.valueOf(id));
+        writer.append(',');
+        writer.append(String.valueOf(game));
+        writer.append(',');
+        writer.append(String.valueOf(currentRound));
+        writer.append(',');
+        writer.append(String.valueOf(centerCardsChoice));
+        writer.append(',');
+        writer.append(String.valueOf(currentOneBotDecision));
+        writer.append(',');
+        writer.append(String.valueOf(currentTwoBotDecision));
+        writer.append(',');
+        writer.append('\n');
 
-            writer.flush();
-            writer.close();
-        }
+        writer.flush();
+        writer.close();
     }
 
     public static int getCenterCard(ArrayList<Integer> centerCards){
         int randomIndex = new Random().nextInt(centerCards.size());
-        centerCardsChoice = centerCards.get(randomIndex); // get a card based on the given index
+        int newReveal = centerCards.get(randomIndex); // get a card based on the given index
         centerCards.remove(randomIndex); // remove the card based on the given index
-        //printLine("Log", "CenterCards: " + centerCards);
-        printLine("Game", "Round " + (15 - centerCards.size()) + " | Revealed number: " + centerCardsChoice);
-
-        return centerCardsChoice;
+        return newReveal;
     }
+
+    public static int letzteKarte(){
+        return letzterZug;
+    }
+
+    public static int letzterZug(){
+        return letzterZug;
+    }
+
+    public static void fillUserCards(ArrayList<Integer> userCards){
+        userCards.clear();
+        for (int i = 1; i <= 15 ; i++) {
+            userCards.add(i);
+        }
+
+    }
+
 }

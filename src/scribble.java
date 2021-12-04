@@ -1,44 +1,64 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
 
 public class scribble {
 
+    static ArrayList<Integer> userCards = new ArrayList<>();
+    static ArrayList<Integer> centerCards = new ArrayList<>();
+
     public static void main(String[] args) {
+        int counter = 0;
 
-        ArrayList<Integer> userCards = new ArrayList<>
-                (Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
-
-        ArrayList<Integer> considerCards = new ArrayList<>();
-        int centerCardChoice = 8;
-        int index;
-        int negPosFactor;
-        System.out.println("--------------------------------");
-        // 10 -> 10, 11, 9, 12, 8}
-        // 0 1 -1 2 -2
-        // -5 -> 15,14,13
-        // -4 -> 12,11,10
-        int [] indexList = {0,1,-1,2,-2};
-
-        for (int index2 : indexList){
-            if (centerCardChoice <0){
-                negPosFactor = (centerCardChoice * -3) + 5;
-            } else{
-                negPosFactor = 5;
-            }
-            // fill considerCards with knowledge
-            int index3 = centerCardChoice + negPosFactor + index2;
-            if (userCards.contains(index3)) {
-                considerCards.add(index3);
+        for (int i = 1; i < 15; i++) {
+            userCards.add(i);
+        }
+        for (int i = -5; i <= 10 ; i++) {
+            if (i !=0){
+                centerCards.add(i);
             }
         }
-        System.out.println(centerCardChoice +"  "+ considerCards);
-        considerCards.clear();
 
+        HashMap<Integer, HashMap<Integer, Integer>> opponentPattern = new HashMap<>();
+        // centerCard, (opponentCard, probability)
 
-        System.out.println("----------------");
+        int probability = 0;
 
+        for (int i = -5; i <= 10; i++) {
+            if (i != 0){
+                opponentPattern.put(i, new HashMap<>());
+                for (int j = 1; j <= 15 ; j++) {
+                    opponentPattern.get(i).put(j, probability);
+                }
+            }
+        }
+        for (int entry = -5; entry <= 10; entry++){
+            //System.out.println(entry);
+           // System.out.println(opponentPattern.get(entry));
+
+        }
+
+        for (int i = 1; i <= 100; i++) {
+            int rCenterCard = getCenterCard();
+            int rUserCard = getUserCard();
+            int n = opponentPattern.get(rCenterCard).get(rUserCard)+1;
+            opponentPattern.get(rCenterCard).put(rUserCard, n);
+        }
+
+        for (int entry = -5; entry <= 10; entry++){
+            System.out.println("cC " + entry + ": " + opponentPattern.get(entry));
+
+        }
+    }
+    public static int getCenterCard(){
+        int index = new Random().nextInt(centerCards.size());
+        return centerCards.get(index);
 
     }
+    public static int getUserCard(){
+        int index = new Random().nextInt(userCards.size());
+        return userCards.get(index);
 
+    }
 }
 

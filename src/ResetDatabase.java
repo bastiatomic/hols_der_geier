@@ -26,6 +26,8 @@ public class ResetDatabase {
             writer.append(',');
             writer.append("TwoBotChoice");
             writer.append(',');
+            writer.append("BotNames");
+            writer.append(',');
             writer.append('\n');
 
             writer.flush();
