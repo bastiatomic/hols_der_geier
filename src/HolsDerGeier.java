@@ -136,7 +136,7 @@ public class HolsDerGeier extends StartGeier{
             //printLine("Zug zweiter Spieler: "+zuege[1]);
 
 
-            //writeToCSV(0, gameIndex, 15 - nochZuVergebendeGeierKarten.size(), punkte, zuege[0], zuege[1], spieler[0] + "_VS_" + spieler[1]);
+            writeToCSV(gameIndex, 15 - nochZuVergebendeGeierKarten.size(), punkte, zuege[0], zuege[1], spieler[0] + "_VS_" + spieler[1]);
             // Wer kriegt die Punkte?
 
             // Lösung: Es muss zwischen Maeuse- (nachesteKarte>0) und Geierkarten ((nachesteKarte<0) unterschieden werden.
@@ -174,7 +174,7 @@ public class HolsDerGeier extends StartGeier{
         // modified code starts here
         //printLine("Finished | Stats (" + spieler[0] + " vs. " + spieler[1] + ")");
         //printLine("Spieler 1: " + punktstaende[0] + " | Spieler 2: "+ punktstaende[1]);
-        //writeToCSV(0, gameIndex, 15 - nochZuVergebendeGeierKarten.size(), punkte, punktstaende[0],punktstaende[1], spieler[0] + "_VS_" + spieler[1]);
+        writeToCSV(gameIndex, -99, punkte, punktstaende[0],punktstaende[1], spieler[0] + "_VS_" + spieler[1]);
         if (punktstaende[0] > punktstaende[1]){
             addWinningPoint(1,0);
         } else {
@@ -187,11 +187,9 @@ public class HolsDerGeier extends StartGeier{
         }
 
     }
-    public static void writeToCSV(int id, int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision, String currentBots) throws IOException {
+    public static void writeToCSV( int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision, String currentBots) throws IOException {
         //System.out.println("Mechanic" + " Writing results to csv");
         FileWriter writer = new FileWriter("database.csv", true);
-        writer.append(String.valueOf(id));
-        writer.append(',');
         writer.append(String.valueOf(game));
         writer.append(',');
         writer.append(String.valueOf(currentRound));

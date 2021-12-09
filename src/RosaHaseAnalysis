@@ -1,0 +1,27 @@
+all negatives are converted to positive
+n <= 5 -> return n*2 +1 or +2
+
+n = 6 -> return 13
+
+n = 7 -> if userCards has 14, return 7
+        if userCards has 1 return 1
+
+n = 8 -> if userCards has 15, return 8
+        if userCards has 2 return 2
+
+n = 9 -> if userCards AND not(opponentCards) has 14, return 14
+        if userCards has 2, return 2
+
+n = 10 -> if userCards AND not(opponentCards) has 15 return 15
+        if userCards has 1, return 1
+
+
+generalized pattern idea:
+given n, userCards, opponentPattern
+
+negative numbers are counted as n*-1
+
+if opponentCards has n+5, return lowest card
+else return n+5
+
+always make random card + counter, if return fails

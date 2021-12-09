@@ -14,6 +14,7 @@ public class OneVulture extends HolsDerGeierSpieler {
     private static int randomCounter;
     private boolean latestIsRandom = false;
     private static int randomWinCounter;
+    int currentRound;
 
     public OneVulture(){
         reset();
@@ -27,6 +28,7 @@ public class OneVulture extends HolsDerGeierSpieler {
     }
 
     public int gibKarte (int centerCardChoice) {
+        currentRound++;
 
         //behavior variables
         int[] considerCardsIndex = {0,1,2,3,-1,-2,-3}; //paying more than n+7 or less than n-2 is generally considered bad
@@ -48,6 +50,13 @@ public class OneVulture extends HolsDerGeierSpieler {
                 userChoice = centerCardChoice + basicIncrement + considerIndex;
                 userCards.removeIf(name -> name.equals(userChoice));
                // System.out.println("Cerberus choice: " + userChoice);
+
+                if(currentRound > 99*15){
+                  //  System.out.println("[cC:"+centerCardChoice+" ] Rosa choice round " + currentRound + ": " + centerCardChoice);
+                }
+
+
+
                 return userChoice;
 
             //case: negative behavior pattern
@@ -55,6 +64,11 @@ public class OneVulture extends HolsDerGeierSpieler {
                 userChoice = centerCardChoice * negativeModifier + considerIndex;
                 userCards.removeIf(name -> name.equals(userChoice));
                // System.out.println("Cerberus choice: " + userChoice);
+
+                if(currentRound > 99*15){
+                    //System.out.println("[cC:"+centerCardChoice+" ] Rosa choice round " + currentRound + ": " + centerCardChoice);
+                }
+
                 return userChoice;
             }
         }

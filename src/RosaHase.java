@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+
+// i want the +10!!!
 public class RosaHase extends HolsDerGeierSpieler
 {
     private final ArrayList<Integer> opponentCards=new ArrayList<>();
     private final ArrayList<Integer> userCards=new ArrayList<>();
+    private int currentRound;
+    private int centerCard2;
 
     public RosaHase()
     {
@@ -20,8 +24,9 @@ public class RosaHase extends HolsDerGeierSpieler
         }
     }
 
-    public int gibKarte(int centerCard)
-    {
+    public int gibKarte(int centerCard) {
+        currentRound ++;
+        centerCard2 = centerCard;
  
         if (letzterZug() !=-99) {
             opponentCards.removeIf(name -> name.equals(letzterZug()));
@@ -85,12 +90,15 @@ public class RosaHase extends HolsDerGeierSpieler
         // sth went wrong, handling it here
         if(currentChoice > 15){
             int index = new Random().nextInt(userCards.size());
-            System.out.println("Chossing random");
+            //System.out.println("Chossing random");
             currentChoice = userCards.get(index);
         }
 
         int finalAusgabe = currentChoice;
         userCards.removeIf(name -> name.equals(finalAusgabe));
+
+        //System.out.println("[Rosa Hase ] " +"cC: "+ centerCard2+ " | choice:  "+ currentChoice);
+        //System.out.println(currentRound + " | " +centerCard+  " | " + currentChoice +" [RosaHase] ");
         return currentChoice;
     }
 }
