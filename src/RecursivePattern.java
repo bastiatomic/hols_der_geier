@@ -1,5 +1,4 @@
-import java.io.FileWriter;
-import java.io.IOException;
+
 import java.util.ArrayList;
 
 public class RecursivePattern {
@@ -11,9 +10,8 @@ public class RecursivePattern {
     public static ArrayList<Integer> opponentCards = new ArrayList<>();
     public static int maxValue = 0;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
 
-        position myPosition = new position(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         ArrayList<Integer> a = new ArrayList<>();
         ArrayList<Integer>  b= new ArrayList<>();
@@ -30,10 +28,11 @@ public class RecursivePattern {
 
     }
 
-    public static int recursion(ArrayList<Integer> n1, ArrayList<Integer> m1,ArrayList<Integer> k1, int depth) throws IOException {
+    public static int recursion(ArrayList<Integer> n1, ArrayList<Integer> m1,ArrayList<Integer> k1, int depth){
 
         if (depth == 0){
             counter2 ++; // count only the end branches / results
+            //n1,m1,k1 are the "position value" // Sebastian Lague minimax
             return evaluateChange(n1,m1,k1); // return evaluation number here !!!
         }
 
@@ -73,17 +72,12 @@ public class RecursivePattern {
 
     }
 
-    public static int evaluateChange( ArrayList<Integer> newUserCards1, ArrayList<Integer> newUserCards3, ArrayList<Integer> newUserCards2) throws IOException {
+    public static int evaluateChange( ArrayList<Integer> centerCards1, ArrayList<Integer> userCards1, ArrayList<Integer> opponentCards1){
 
-        System.out.println(newUserCards1 + " " + newUserCards3 + " " + newUserCards2);
+        //System.out.println(newUserCards1 + " " + newUserCards3 + " " + newUserCards2);
+        // + for userCards1, - for OpponentCards1,
 
-        int sum = 0;
-        for (int card:
-             newUserCards3) {
-            sum += card;
-        }
-
-        return sum;
+        return -1;
 
 
 
