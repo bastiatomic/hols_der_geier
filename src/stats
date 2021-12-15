@@ -1,2 +1,0 @@
-n+5 + randomPick vs. randomBot -> 75% win rate
-n+5 + randomPick vs. OneBot (negPos, max(), get(0) if no valid) -> 65% win rate

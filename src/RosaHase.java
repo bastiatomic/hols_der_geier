@@ -7,8 +7,6 @@ public class RosaHase extends HolsDerGeierSpieler
 {
     private final ArrayList<Integer> opponentCards=new ArrayList<>();
     private final ArrayList<Integer> userCards=new ArrayList<>();
-    private int currentRound;
-    private int centerCard2;
 
     public RosaHase()
     {
@@ -25,8 +23,6 @@ public class RosaHase extends HolsDerGeierSpieler
     }
 
     public int gibKarte(int centerCard) {
-        currentRound ++;
-        centerCard2 = centerCard;
  
         if (letzterZug() !=-99) {
             opponentCards.removeIf(name -> name.equals(letzterZug()));

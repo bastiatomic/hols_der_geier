@@ -1,17 +1,23 @@
-//main frame
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
+/**
+ * Beschreiben Sie hier die Klasse HolsDerGeier.
+ *
+ * @author (Ihr Name)
+ * @version (eine Versionsnummer oder ein Datum)
+ */
 
-public class HolsDerGeier extends StartGeier{
-    private boolean allowPrintLine = true;
+
+public class HolsDerGeier {
+    /**
+     * Hier definieren Sie die Attribute Ihrer Klasse
+     * Beispiel:   private <Typ> Name_des_Attributs
+     */
+
     /* Hier stehen die Geier- und Maeusekarten */
-    private ArrayList<Integer> nochZuVergebendeGeierKarten=new ArrayList<>();
+    private ArrayList<Integer> nochZuVergebendeGeierKarten=new ArrayList<Integer>();
 
     /* Hier stehen die vom Computer gespielten Karten */
-    private ArrayList<ArrayList<Integer>> gespielteKarten=new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> gespielteKarten=new ArrayList<ArrayList<Integer>>();
 
     /* Punktestaende */
     private int punkte;
@@ -24,9 +30,11 @@ public class HolsDerGeier extends StartGeier{
      * Hier definieren Sie den Konstruktor fuer Objekte Ihrer Klasse (falls Sie einen eigenen brauchen) HolsDerGeier
      */
     public HolsDerGeier()  {
-        gespielteKarten.add(new ArrayList<>());
-        gespielteKarten.add(new ArrayList<>());
+        gespielteKarten.add(new ArrayList<Integer>());
+        gespielteKarten.add(new ArrayList<Integer>());
     }
+
+
 
     /**
      * Neu laden der Karten
@@ -52,7 +60,7 @@ public class HolsDerGeier extends StartGeier{
     }
 
     /**
-     * Hier kann nach dem letzten Zug gefragt werden. Aber diese Methode ist so eigentlich nicht wirklich gelungen.
+     * Hier kann nach dem letzten Zug gefragt werden. Aber diese Methode ist so eigentlich nciht wirklich gelungen.
      */
     public int letzterZug(int nummer) {
         if (gespielteKarten.get(nummer).size()>0)
@@ -64,7 +72,7 @@ public class HolsDerGeier extends StartGeier{
     /**
      * Alles auf Null
      */
-    private void reset() { // this is the control instance for the framework, has nothing to do with the unque bots
+    private void reset() {
         punkte=0;
         for (int i=0;i<gespielteKarten.size();i++)
             gespielteKarten.get(i).clear();
@@ -88,19 +96,25 @@ public class HolsDerGeier extends StartGeier{
      * Starte ein neues Spiel
      */
     public void naechstesSpiel() {
-        if (spieler==null)
-        {
-            printLine("Noch keine Spieler angemeldet!");
-            //printLine(spieler);
-        }
-        else {
-           // printLine("===============");
-            //printLine("= NEUES SPIEL, ES STEHT 0:0 =");
-            //printLine("===============");
+        if (spieler==null) {
+            //System.out.println("Noch keine Sieler angemeldet!");
+        }else {
+            //System.out.println("===============");
+            //System.out.println("= NEUES SPIEL, ES STEHT 0:0 =");
+            //System.out.println("===============");
             reset();
         }
     }
 
+
+    /**
+     * Der naechste Spielzug wird ausgefuehrt.
+     * Dazu wird:
+     *  - Neue Geier- oder Maeusekarte ermittelt
+     *  - Zufaellig eine Karte vom Computer gespielt
+     *  - Die Spieler werden gefragt nach den Karten gefragt
+     *  - Ausgewertet und der Punktestand gefuehrt
+     */
     public void naechsterZug() throws Exception {
         if (!nochZuVergebendeGeierKarten.isEmpty()) {
 
@@ -117,29 +131,27 @@ public class HolsDerGeier extends StartGeier{
                 // Sicher ist sicher: Haben Sie diese Karten schon einmal gespielt?
                 // Wenn ja: Jetzt ist aber Schluss
                 // Wenn nein: Ich merke mit die Karte
-                if (gespielteKarten.get(i).contains(zuege[i]) ){
-                    System.out.println("GESCHUMMELT "+spieler[i] + ": Diese Karte wurde bereits gespielt "+i+" "+zuege[i]);
-                    System.exit(-1);}
+                if (gespielteKarten.get(i).contains(zuege[i]) )
+                    throw new Exception("GESCHUMMELT: Diese Karte wurde bereits gespielt "+i+" "+zuege[i]);
 
 
                 if ((zuege[i]<1)||(zuege[i]>15))
                     throw new Exception("GESCHUMMELT: Diese Karte gibt es gar nicht");
             }
 
-            // Alle Züge fertig, dann eintragen (erst hier wg. Methode naechsterZug
+            // Alle Z�ge fertig, dann eintragen (erst hier wg. Methode naechsterZug
             for (int i=0;i<spieler.length;i++)
                 gespielteKarten.get(i).add(zuege[i]);
 
             // So sieht der aktuelle Zug aus
-           // printLine("Ausgespielte Karte: "+naechsteKarte);
-           // printLine("Zug erster Spieler: "+zuege[0]);
-            //printLine("Zug zweiter Spieler: "+zuege[1]);
+            //System.out.println("Ausgespielte Karte: "+naechsteKarte);
+            //System.out.println("Zug erster Spieler: "+zuege[0]);
+            //System.out.println("Zug zweiter Spieler: "+zuege[1]);
 
 
-            writeToCSV(gameIndex, 15 - nochZuVergebendeGeierKarten.size(), punkte, zuege[0], zuege[1], spieler[0] + "_VS_" + spieler[1]);
             // Wer kriegt die Punkte?
 
-            // Lösung: Es muss zwischen Maeuse- (nachesteKarte>0) und Geierkarten ((nachesteKarte<0) unterschieden werden.
+            // L�sung: Es muss zwischen Maeuse- (nachesteKarte>0) und Geierkarten ((nachesteKarte<0) unterschieden werden.
             if (zuege[0]!=zuege[1]) {
                 if (punkte>0)
                     if (zuege[0]>zuege[1])
@@ -153,10 +165,10 @@ public class HolsDerGeier extends StartGeier{
                     punktstaende[1]=punktstaende[1]+punkte;
                 punkte=0;
             } else {}
-               // printLine("Unentschieden - Punkte wandern in die naechste Runde");
-            //printLine("Spielstand: "+punktstaende[0]+" : "+punktstaende[1]);
+                //System.out.println("Unentschieden - Punkte wandern in die naechste Runde");
+            //System.out.println("Spielstand: "+punktstaende[0]+" : "+punktstaende[1]);
         } else {}
-           // printLine("Spiel ist zu Ende. Sie muessen zuerst die Methode neues Spiel aufrufen");
+            //System.out.println("Spiel ist zu Ende. Sie muessen zuerst die Methode neues Siel aufrufen");
 
     }
 
@@ -164,48 +176,20 @@ public class HolsDerGeier extends StartGeier{
      * Hier kann ein vollstaendiges Spiel durchgefuehrt werden!
      */
     public void ganzesSpiel() throws Exception {
-        allowPrintLine = true;
-        //printLine(gameIndex);
         if (nochZuVergebendeGeierKarten.isEmpty())
             naechstesSpiel();
         while (!nochZuVergebendeGeierKarten.isEmpty()) {
             naechsterZug();
+
         }
-        // modified code starts here
-        //printLine("Finished | Stats (" + spieler[0] + " vs. " + spieler[1] + ")");
-        //printLine("Spieler 1: " + punktstaende[0] + " | Spieler 2: "+ punktstaende[1]);
-        writeToCSV(gameIndex, -99, punkte, punktstaende[0],punktstaende[1], spieler[0] + "_VS_" + spieler[1]);
-        if (punktstaende[0] > punktstaende[1]){
-            addWinningPoint(1,0);
+        if (punktstaende[0] == 0 && punktstaende[1] == 0){
+            StartGeier.addWinningPoint(0,0);
+
+        } else if (punktstaende[0] > punktstaende[1]){
+            StartGeier.addWinningPoint(1,0);
         } else {
-            addWinningPoint(0,1);
+            StartGeier.addWinningPoint(0,1);
         }
-    }
-    public void printLine(String string1){
-        if (allowPrintLine){
-            System.out.println(string1);
-        }
-
-    }
-    public static void writeToCSV( int game, int currentRound, int centerCardsChoice, int currentOneBotDecision, int currentTwoBotDecision, String currentBots) throws IOException {
-        //System.out.println("Mechanic" + " Writing results to csv");
-        FileWriter writer = new FileWriter("database.csv", true);
-        writer.append(String.valueOf(game));
-        writer.append(',');
-        writer.append(String.valueOf(currentRound));
-        writer.append(',');
-        writer.append(String.valueOf(centerCardsChoice));
-        writer.append(',');
-        writer.append(String.valueOf(currentOneBotDecision));
-        writer.append(',');
-        writer.append(String.valueOf(currentTwoBotDecision));
-        writer.append(',');
-        writer.append(String.valueOf(currentBots));
-        writer.append(',');
-        writer.append('\n');
-
-        writer.flush();
-        writer.close();
     }
 
 }

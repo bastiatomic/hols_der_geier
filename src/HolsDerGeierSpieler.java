@@ -1,7 +1,4 @@
-// constructor class
-
 import java.io.IOException;
-
 public abstract class HolsDerGeierSpieler {
 
     private int nummer;
@@ -26,5 +23,4 @@ public abstract class HolsDerGeierSpieler {
 
     public abstract void reset();
     public abstract int gibKarte(int naechsteKarte) throws IOException;
-
 }

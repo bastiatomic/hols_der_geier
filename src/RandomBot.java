@@ -1,4 +1,3 @@
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +117,7 @@ public class RandomBot extends HolsDerGeierSpieler {
         //end of round mechanic
         if(roundCounter == ((StartGeier.gamesAmount)*15)){
             roundCounter = 0;
-           // System.out.println(myEvaluations);
+            // System.out.println(myEvaluations);
             //System.out.println(opponentEvaluations);
 
             float sum1 = 0f;
