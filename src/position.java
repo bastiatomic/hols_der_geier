@@ -1,18 +1,30 @@
 import java.util.ArrayList;
+import java.util.List;
 
-public class position {
+class position {
 
-    // these cards have been played!
-    ArrayList<Integer> centerCards;
-    ArrayList<Integer> userCards;
-    ArrayList<Integer> opponentCards;
+    public static void main(String[] args) {
 
-    public position(ArrayList<Integer> centerCards, ArrayList<Integer> userCards, ArrayList<Integer> opponentCards) {
-        this.centerCards = centerCards;
-        this.userCards = userCards;
-        this.opponentCards = opponentCards;
+
+        List<ArrayList<Integer>> x = new ArrayList<>();
+
+        for (int i = 0; i < 6; i++) {
+            x.add(new ArrayList<>());
+
+            if (i % 2 != 0){
+                x.get(i).add(-1);
+            } else {
+                x.get(i).add(1);
+                x.get(i).add(2);
+                x.get(i).add(3);
+
+            }
+
+
+        }
+        System.out.println(x);
+
     }
-
 
 
 }

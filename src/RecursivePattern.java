@@ -1,4 +1,4 @@
-
+// for evaluation, I need 6 variables, 3x the current list to
 import java.util.ArrayList;
 
 public class RecursivePattern {
@@ -14,16 +14,15 @@ public class RecursivePattern {
 
 
         ArrayList<Integer> a = new ArrayList<>();
-        ArrayList<Integer>  b= new ArrayList<>();
+        ArrayList<Integer> b = new ArrayList<>();
         ArrayList<Integer> c = new ArrayList<>();
-
-
 
         fillCards(centerCards);fillCards(userCards);fillCards(opponentCards);
 
         System.out.println(recursion(a,b,c, 3));
         System.out.println("all unique values counter: " + counter);
         System.out.println("last branch counter: " + counter2);
+        System.out.println("MaxValue: " + maxValue);
 
 
     }
@@ -41,19 +40,17 @@ public class RecursivePattern {
             for (int userCard: userCards){
                 for (int opponentCard : centerCards) {
                     counter++; // counting all unique occurrences
-                    //System.out.println(centerCards +" " + userCards);
 
                     ArrayList<Integer> n = new ArrayList<>(n1);
                     ArrayList<Integer> m = new ArrayList<>(m1);
                     ArrayList<Integer> k = new ArrayList<>(k1);
-                    // System.out.println("depth: " + depth + "| " + n + " " + m);
                     n.add(centerCard);
                     m.add(userCard);
                     k.add(opponentCard);
 
                     //evaluateChange(userCards, m);
+                    maxValue = Math.max(maxValue, recursion(n, m,k, depth - 1));
 
-                    recursion(n, m,k, depth - 1);
                 }
             }
         }
@@ -76,8 +73,12 @@ public class RecursivePattern {
 
         //System.out.println(newUserCards1 + " " + newUserCards3 + " " + newUserCards2);
         // + for userCards1, - for OpponentCards1,
+        int evaulationValue = 0;
+        for(int entry : userCards1){
+            evaulationValue += (entry*2);
+        }
 
-        return -1;
+        return evaulationValue;
 
 
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 
 
-public class HolsDerGeier {
+public class HolsDerGeier extends StartGeier{
     /**
      * Hier definieren Sie die Attribute Ihrer Klasse
      * Beispiel:   private <Typ> Name_des_Attributs
@@ -21,10 +21,13 @@ public class HolsDerGeier {
 
     /* Punktestaende */
     private int punkte;
+    private int gameCounter = 0;
     private int[] punktstaende=new int[2];
 
     /* Das ist die Referenz Ihr Objekt */
     private HolsDerGeierSpieler[] spieler;
+
+    private final boolean allowDebug = true;
 
     /**
      * Hier definieren Sie den Konstruktor fuer Objekte Ihrer Klasse (falls Sie einen eigenen brauchen) HolsDerGeier
@@ -96,12 +99,12 @@ public class HolsDerGeier {
      * Starte ein neues Spiel
      */
     public void naechstesSpiel() {
-        if (spieler==null) {
-            //System.out.println("Noch keine Sieler angemeldet!");
-        }else {
-            //System.out.println("===============");
-            //System.out.println("= NEUES SPIEL, ES STEHT 0:0 =");
-            //System.out.println("===============");
+        if (spieler==null)
+            printLine("Noch keine Sieler angemeldet!");
+        else {
+            printLine("===============");
+            printLine("= NEUES SPIEL, ES STEHT 0:0 =");
+            printLine("===============");
             reset();
         }
     }
@@ -117,6 +120,7 @@ public class HolsDerGeier {
      */
     public void naechsterZug() throws Exception {
         if (!nochZuVergebendeGeierKarten.isEmpty()) {
+            gameCounter++;
 
             // naechste Geier- Maeusekarte
             int naechsteKarte=spieleNaechsteKarte();
@@ -144,9 +148,9 @@ public class HolsDerGeier {
                 gespielteKarten.get(i).add(zuege[i]);
 
             // So sieht der aktuelle Zug aus
-            //System.out.println("Ausgespielte Karte: "+naechsteKarte);
-            //System.out.println("Zug erster Spieler: "+zuege[0]);
-            //System.out.println("Zug zweiter Spieler: "+zuege[1]);
+            printLine("Ausgespielte Karte: "+naechsteKarte);
+            printLine("Zug erster Spieler: "+zuege[0]);
+            printLine("Zug zweiter Spieler: "+zuege[1]);
 
 
             // Wer kriegt die Punkte?
@@ -164,11 +168,14 @@ public class HolsDerGeier {
                 else
                     punktstaende[1]=punktstaende[1]+punkte;
                 punkte=0;
-            } else {}
-                //System.out.println("Unentschieden - Punkte wandern in die naechste Runde");
-            //System.out.println("Spielstand: "+punktstaende[0]+" : "+punktstaende[1]);
-        } else {}
-            //System.out.println("Spiel ist zu Ende. Sie muessen zuerst die Methode neues Siel aufrufen");
+            } else
+                printLine("Unentschieden - Punkte wandern in die naechste Runde");
+            if(true){ // gameCounter%15 == 0
+                System.out.println("Spielstand: "+punktstaende[0]+" : "+punktstaende[1]);
+                //addWinningPoints(punktstaende[0],punktstaende[1]);
+                 }
+        } else {
+            printLine("Spiel ist zu Ende. Sie muessen zuerst die Methode neues Siel aufrufen");}
 
     }
 
@@ -180,16 +187,13 @@ public class HolsDerGeier {
             naechstesSpiel();
         while (!nochZuVergebendeGeierKarten.isEmpty()) {
             naechsterZug();
-
         }
-        if (punktstaende[0] == 0 && punktstaende[1] == 0){
-            StartGeier.addWinningPoint(0,0);
-
-        } else if (punktstaende[0] > punktstaende[1]){
-            StartGeier.addWinningPoint(1,0);
-        } else {
-            StartGeier.addWinningPoint(0,1);
+    }
+    public void printLine(String s){
+        if(allowDebug){
+            System.out.println("[HDG] " +s);
         }
+
     }
 
 }

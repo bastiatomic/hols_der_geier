@@ -1,8 +1,0 @@
- if (punktstaende[0] == 0 && punktstaende[1] == 0){
-            addWinningPoint(0,0);
-
-        } else if (punktstaende[0] > punktstaende[1]){
-            addWinningPoint(1,0);
-        } else {
-            addWinningPoint(0,1);
-        }
