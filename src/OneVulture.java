@@ -30,14 +30,12 @@ public class OneVulture extends HolsDerGeierSpieler {
         int[] considerCardsIndex = {0,-1,-2}; //paying more than n+7 or less than n-2 is generally considered bad
         final int basicIncrement = 5; // basic n+5 mechanic
         final int negativeModifier = -1; // lower values spend too much on negative cards
-        //testing the effect of a random choice, if considerCardsIndex finds nothing
 
         for (int considerIndex : considerCardsIndex){
             //case: positive behavior pattern
             if (centerCardChoice > 0 && userCards.contains(centerCardChoice + basicIncrement + considerIndex)) {
                 userChoice = centerCardChoice + basicIncrement + considerIndex;
                 userCards.removeIf(name -> name.equals(userChoice));
-               // System.out.println("Cerberus choice: " + userChoice);
 
                 return userChoice;
 
