@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class StartGeier {
-    static int gamesAmount = 10000;
+    static int gamesAmount = 10;
     static float timePast;
     static int vicPoints1 = 0, vicPoints2 = 0;
 

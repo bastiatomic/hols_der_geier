@@ -11,7 +11,7 @@ public class HolsDerGeier {
     /* Punktestaende */
     private int punkte;
     private int[] punktstaende=new int[2];
-    private static boolean allowDebug = false;
+    private static boolean allowDebug = true;
 
     /* Das ist die Referenz Ihr Objekt */
     private HolsDerGeierSpieler[] spieler;
