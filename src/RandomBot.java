@@ -48,4 +48,11 @@ public class RandomBot extends HolsDerGeierSpieler {
 
 
 
+
+
+
+
+
+
+
 }

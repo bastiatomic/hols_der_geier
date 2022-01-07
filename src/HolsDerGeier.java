@@ -173,7 +173,7 @@ public class HolsDerGeier {
             naechsterZug();
         }
         printLine("End call");
-        //StartGeier.addWinningPoints(punktstaende[0], punktstaende[1]);
+        StartGeier.addWinningPoints(punktstaende[0], punktstaende[1]);
     }
 
     private static void printLine(String s){

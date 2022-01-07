@@ -1,12 +1,24 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+/* CORE IDEA
+der Bot analysiert immer in der 15. Runde, ob er das aktuelle Spiel gewinnt (Funktion "addWinningPoints"). Wenn er gewinnt,
+geht currentWinRate um 1 hoch.
+In jedem 30. Spiel analysiert der Bot, ob seine momentane currentWinRate < 0,5 ist. Wenn ja, wird eine neue Strategie zufällig
+aus mehreren Code-Blöcken ausgewählt. Dies wird immer wieder wiederholt, nur dass ab der 2. Kontrolle auch geprüft wird,
+ob die Gewinnchance *grundsätzlich* steigt oder nicht.
+
+Der große switch-Case-Block realisiert die verschiedenenen Code-Blöcke, die mit o.g. Verfahren dynamisch aktiviert werden.
+Dabei werden die Geierkarten in vier Kategorien (negativ, niedrig, mittel, hoch) unterteilt und jede Kategorie
+hat 2-3 unabhängige Code-Blöcke, die verwendet werden können.
+*/
 
 public class ExploringVulture extends HolsDerGeierSpieler{
 
+    HashMap<Integer, Integer> gameTree = new HashMap<>();
+    HashMap<Integer, Integer> gameTreeCurrentRun = new HashMap<>();
     private static int roundCounter = 0, gamesWon = 0;
-    private static int myLastMove, lastMoveProgram, opponentPoints, myPoints;
+    private static int myLastMove, lastMoveProgram;
     private static final boolean allowDebug = false;
     private float currentWinRate;
     private static int negFactor = 1, lowFactor = 1, midFactor = 1, highFactor = 1;
@@ -19,7 +31,8 @@ public class ExploringVulture extends HolsDerGeierSpieler{
     private final ArrayList<Integer> myPlayedCards = new ArrayList<>();
     private final ArrayList<Integer> opponentCards = new ArrayList<>();
     private final ArrayList<Integer> opponentPlayedCards = new ArrayList<>();
-    //private ArrayList<>
+    //merge all *Played arrays into gameTree
+    //private ArrayList<int[]> gameTree = new ArrayList<>();
 
 
     public ExploringVulture() {
@@ -36,13 +49,13 @@ public class ExploringVulture extends HolsDerGeierSpieler{
             myCards.add(i);
             opponentCards.add(i);
         }
-        myPoints = 0;
-        opponentPoints = 0;
+        gameTree.clear();
     }
 
     // SWITCH BETWEEN ALL POSSIBILITIES !!! make a list and iterate if useful. Add random if no combination works
 
     public int gibKarte(int centerCard) {
+        int realCenterCard = centerCard;
         // init basic variables
         roundCounter++; // keep track of the current round / game -> "be aware of your surroundings"
         centerCardsPlayed.add(centerCard);
@@ -72,15 +85,15 @@ public class ExploringVulture extends HolsDerGeierSpieler{
             currentWinRate = gamesWon / (float) (roundCounter / 15);
 
             // every 30th game
-            if( roundCounter % (15*30) == 0){
+            if (roundCounter % (15*30) == 0){
 
                 // adapting when win rate is below 0.5
                 if(currentWinRate < 0.5 && currentWinRate < localWinRate){
                     printLine("--------- adapting in round "+roundCounter/15+" ---------------");
-                    negFactor = ThreadLocalRandom.current().nextInt(1, 3 + 1);
-                    lowFactor = ThreadLocalRandom.current().nextInt(1, 2 + 1);
-                    midFactor = ThreadLocalRandom.current().nextInt(1, 2 + 1);
-                    highFactor = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+                    negFactor = ThreadLocalRandom.current().nextInt(1, 4 + 1);
+                    lowFactor = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+                    midFactor = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+                    highFactor = ThreadLocalRandom.current().nextInt(1, 4 + 1);
                     printLine(negFactor + " " + lowFactor + " " + midFactor + " " + highFactor);
                 }
                 localWinRate = currentWinRate;
@@ -94,6 +107,8 @@ public class ExploringVulture extends HolsDerGeierSpieler{
         if(centerCard < -6) {
             return sendCard(Collections.min(myCards));
         }
+
+        fillGameTree();
 
         switch (centerCard){ // "real" centerCard
 
@@ -120,6 +135,12 @@ public class ExploringVulture extends HolsDerGeierSpieler{
                     case 3: {
                         return sendCard(Collections.min(myCards));
                     }
+                    case 4:
+                    { if (myCards.contains(gameTreeCurrentRun.get(realCenterCard))){
+                        return sendCard(gameTreeCurrentRun.get(realCenterCard));
+                    } else {
+                        return sendRandom();}
+                    }
                 }
 
             }
@@ -143,6 +164,11 @@ public class ExploringVulture extends HolsDerGeierSpieler{
                             }
                         }
                     }
+                    case 3 -> { if (myCards.contains(gameTreeCurrentRun.get(realCenterCard))){
+                        return sendCard(gameTreeCurrentRun.get(realCenterCard));
+                    } else {
+                        return sendRandom();}
+                    }
                 }
             }
 
@@ -163,6 +189,12 @@ public class ExploringVulture extends HolsDerGeierSpieler{
                             }
                         }
                     }
+                    case 3 -> { if (myCards.contains(gameTreeCurrentRun.get(realCenterCard))){
+                        return sendCard(gameTreeCurrentRun.get(realCenterCard));
+                    } else {
+                        return sendRandom();}
+                    }
+
                 }
             }
 
@@ -190,6 +222,12 @@ public class ExploringVulture extends HolsDerGeierSpieler{
                             return sendCard(Collections.min(myCards));
                         }
                     }
+                    case 4: { if (myCards.contains(gameTreeCurrentRun.get(realCenterCard))){
+                        return sendCard(gameTreeCurrentRun.get(realCenterCard));
+                    } else {
+                        return sendRandom();}
+                    }
+
                 }
             }
 
@@ -207,6 +245,7 @@ public class ExploringVulture extends HolsDerGeierSpieler{
     }
 
     private int sendRandom(){
+        //System.out.println(myCards.size());
         int randindex = new Random().nextInt(myCards.size());
         int n = myCards.get(randindex);
         return sendCard(n);
@@ -214,11 +253,11 @@ public class ExploringVulture extends HolsDerGeierSpieler{
 
     private int addWinningPoints(ArrayList<Integer> cc, ArrayList<Integer> my, ArrayList<Integer> opp) {
 
-        myPoints = 0;
-        opponentPoints = 0;
+        int myPoints = 0;
+        int opponentPoints = 0;
         int currentValue = 0;
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < cc.size(); i++) {
             int c1 = cc.get(i), m1 = my.get(i), o1 = opp.get(i);
 
             currentValue += c1;
@@ -247,5 +286,31 @@ public class ExploringVulture extends HolsDerGeierSpieler{
         //enhanced string output
         if(allowDebug){
             System.out.println("\u001B[32m" + "[VA | "+ roundCounter+"] " + s  + "\u001B[0m");}
+    }
+    public void fillGameTree(){
+        if(letzterZug() != -99){
+            gameTree.put(lastMoveProgram, letzterZug());
+        }
+        if(roundCounter % 15 == 0){
+            //System.out.println(gameTree);
+            int keySum = 0, valueSum = 0;
+            for (Map.Entry<Integer, Integer> entry : gameTree.entrySet()) {
+                Integer key = entry.getKey();
+                Integer value = entry.getValue();
+                keySum += key;
+                valueSum += value;
+            }
+            if(40 - keySum != 0){
+                gameTree.put(40 - keySum, 120-valueSum);
+            }
+
+            //deep copy hashmap
+            gameTreeCurrentRun.clear();
+            for (Map.Entry<Integer, Integer> entry : gameTree.entrySet()) {
+                Integer key = entry.getKey();
+                Integer value = entry.getValue();
+                gameTreeCurrentRun.put(key,value);
+            }
+        }
     }
 }
