@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class StartGeier {
-    static int gamesAmount = 10; // FIX
+    static int gamesAmount = 100_000; // FIX
     static float timePast;
     static int vicPoints1 = 0, vicPoints2 = 0;
     static int myFinalVicPoints = 0;
@@ -14,20 +14,22 @@ public class StartGeier {
 
 
 
-        //botList.add(new CopyPastaBot_Bastian_Hesse());
-        //botList.add(new ExploringVulture());
-        /*botList.add(new CopyPasta_MVP());
+        botList.add(new BotNouri());
+        botList.add( new BasicGeier());
+        botList.add(new CopyPasta_Bastian_Hesse());
+        botList.add(new ExploringVulture());
+        botList.add(new CopyPasta_MVP());
         botList.add(new VultureAgent());
         botList.add(new RandomBot());
-        botList.add(new DenisPavlov2());*/
+        botList.add(new DenisPavlov2());
         botList.add(new RosaHase());
-        //botList.add(new Sascha());
-       /* botList.add(new FlosBot());
+        botList.add(new Sascha());
+        botList.add(new FlosBot());
         botList.add(new ThreeMonkeys());
         botList.add(new ChristopherTabea());
         botList.add(new AltenhofSpiessBot());
         botList.add(new testgeier());
-        botList.add(new maikbaum()); */
+        botList.add(new maikbaum());
 
         for (int n = 1; n < botList.size(); n++){
 
