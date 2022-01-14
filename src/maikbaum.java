@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class maikbaum extends HolsDerGeierSpieler {
+
+
 
     int gameCounter = 0;
     int botCounter1 = 0;
@@ -26,6 +29,7 @@ public class maikbaum extends HolsDerGeierSpieler {
         //zählt Runden
         gameCounter++;
 
+        int randomZahl = ThreadLocalRandom.current().nextInt(1, 4 + 1);
 
        /* if (zuege[0]==zuege[1]){
             unetnschieden++;

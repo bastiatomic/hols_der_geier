@@ -41,7 +41,7 @@ public class VultureAgent extends HolsDerGeierSpieler {
     private static int roundCounter = 0, gamesWon = 0;
     private static int myLastMove, lastMoveProgram, opponentPoints, myPoints;
     private static boolean secondStrategy = false, thirdStrategy = false, fourthStrategy = false;
-    private static final boolean allowDebug = true;
+    private static final boolean allowDebug = false;
 
     private final ArrayList<Integer> centerCardsPlayed = new ArrayList<>();
     private final ArrayList<Integer> myCards = new ArrayList<>();

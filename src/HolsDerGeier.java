@@ -11,7 +11,7 @@ public class HolsDerGeier {
     /* Punktestaende */
     private int punkte;
     private int[] punktstaende=new int[2];
-    private static boolean allowDebug = true;
+    private static boolean allowDebug = false;
 
     /* Das ist die Referenz Ihr Objekt */
     private HolsDerGeierSpieler[] spieler;
@@ -173,6 +173,7 @@ public class HolsDerGeier {
             naechsterZug();
         }
         printLine("End call");
+        //System.out.println("ATTENTION END POINTS: " + punktstaende[0] + ", "+ punktstaende[1]);
         StartGeier.addWinningPoints(punktstaende[0], punktstaende[1]);
     }
 
