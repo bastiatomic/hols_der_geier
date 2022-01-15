@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 /**
  * @author Bastian Hesse
- * @version 3.1 (10.01.2022)
+ * @version 3.2 (10.01.2022) [latest]
  **/
 
 /* CORE IDEA
