@@ -11,7 +11,7 @@ der Bot spielt immer die Züge des Gegners aus der vorausgegangenen Runde. That'
 "copyPasta" bezeichnet die verwendete Strategie.
 "centerCard" bezieht sich auf die "Geier-Karte". */
 
-public class CopyPasta_Bastian_Hesse extends HolsDerGeierSpieler {
+public class CopyPastaBot_Bastian_Hesse extends HolsDerGeierSpieler {
 
     private final ArrayList<int[]> currentGameList = new ArrayList<>();
     private HashMap<Integer, Integer> gameHashMapCurrentRun = new HashMap<>();

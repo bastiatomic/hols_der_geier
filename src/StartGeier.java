@@ -12,7 +12,7 @@ public class StartGeier {
 
         ArrayList<HolsDerGeierSpieler> botList = new ArrayList<>();
 
-        botList.add(new CopyPasta_Bastian_Hesse());
+        botList.add(new CopyPastaBot_Bastian_Hesse());
         botList.add(new BotNouri());
         botList.add(new BasicGeier());
         botList.add(new ExploringVulture());
