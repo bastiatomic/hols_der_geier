@@ -3,66 +3,51 @@ import java.util.ArrayList;
 /**
  * Beschreiben Sie hier die Klasse Geier.
  *
- * @author (Alejandro Punal Clement)
- * @version (eine Versionsnummer oder ein Datum)
+ * @author (Lazi)
+ * @version 27.514,b
  */
-public class testgeier extends HolsDerGeierSpieler {
+public class lazaros extends HolsDerGeierSpieler {
     /**
      /**
      * Hier definieren Sie den Konstruktor fuer Objekte Ihrer Klasse (falls Sie einen eigenen brauchen) Geier
      */
     private final ArrayList<Integer> nichtGespielte = new ArrayList<>();
-    private final ArrayList<Integer> gegnerNichtGespielt = new ArrayList<>();
-    private final ArrayList<Integer> nichtGespieltePunkte = new ArrayList<>();
-    ArrayList<Integer> bestimmteRandomZahlen = new ArrayList<Integer>();
+    private final ArrayList<Integer> myCards3 = new ArrayList<>();
+    ArrayList<Integer> randomNumbers2 = new ArrayList<>();
 
-    public testgeier() {
+    public lazaros() {
         reset ();
 
     }
 
     public void reset () {
-        gegnerNichtGespielt.clear();
         nichtGespielte.clear();
         for (int i = 1; i <= 15; i++) {
-            gegnerNichtGespielt.add(i);
             nichtGespielte.add(i);
         }
 
-        nichtGespieltePunkte.clear();
+        myCards3.clear();
         for (int i = -5; i <= 10; i++)
             if (i != 0) {
-                nichtGespieltePunkte.add(i);
+                myCards3.add(i);
             }
-        bestimmteRandomZahlen.clear();
-        bestimmteRandomZahlen.add(11);
-        bestimmteRandomZahlen.add(4);
-        bestimmteRandomZahlen.add(7);
-        bestimmteRandomZahlen.add(6);
-        bestimmteRandomZahlen.add(5);
-        bestimmteRandomZahlen.add(3);
+        randomNumbers2.clear();randomNumbers2.add(11);randomNumbers2.add(4);randomNumbers2.add(7);randomNumbers2.add(6);randomNumbers2.add(5);randomNumbers2.add(3);
     }
 
     public int gibKarte(int naechsteKarte) {
-        nichtGespieltePunkte.removeIf(name -> name.equals(naechsteKarte));
-        return meinZug(naechsteKarte);
+        myCards3.removeIf(name -> name.equals(naechsteKarte));
 
-    }
-
-    private int meinZug(int naechsteKarte) {
         int kartenZaehler = nichtGespielte.size();
         if (kartenZaehler == 1) {
             return nichtGespielte.get(0);
         }
-        //liste erstellen
-
 
         switch (naechsteKarte) { //Logik von meinem Bot
-            case -5: if (existCard(10))
-                return karteAusDeckLoeschen(10);
+            case -5: if (existCard(8))
+                return karteAusDeckLoeschen(8);
             case -4: if (existCard(9))
-                return karteAusDeckLoeschen(9);
-            case -3: if (existCard(8))
+                return karteAusDeckLoeschen(10);
+            case -3: if (existCard(10))
                 return karteAusDeckLoeschen(8);
             case -2: if (existCard(2))
                 return karteAusDeckLoeschen(2);
@@ -77,10 +62,10 @@ public class testgeier extends HolsDerGeierSpieler {
 
     }
     private int chooseRandomSpecificCard() {
-        int cardsCount = bestimmteRandomZahlen.size();
+        int cardsCount = randomNumbers2.size();
         int index = (int) (Math.random() * cardsCount);
-        int value = bestimmteRandomZahlen.get(index);
-        bestimmteRandomZahlen.removeIf(name -> name.equals(value));
+        int value = randomNumbers2.get(index);
+        randomNumbers2.removeIf(name -> name.equals(value));
         return value;
     }
     private boolean existCard(int number) {

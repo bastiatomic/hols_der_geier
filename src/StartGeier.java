@@ -37,7 +37,8 @@ public class StartGeier {
 
                 hdg.ganzesSpiel();
             }
-            System.out.println(botList.get(0).toString() +": " + vicPoints1 +" | " + vicPoints2 +": " + botList.get(n));
+            System.out.println(botList.get(0).toString() +": " + vicPoints1 +" | " + vicPoints2 +" :" + botList.get(n));
+
             myFinalVicPoints += vicPoints1;
             vicPoints2 = 0; vicPoints1 = 0;
         }
